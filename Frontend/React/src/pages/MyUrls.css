@@ -1,0 +1,51 @@
+﻿.my-urls-container {
+    padding: 20px;
+    color: white;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.my-urls-container h2 {
+    color: #61dafb;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.url-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.url-item {
+    background-color: #3a3f4a;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #4a4f5a;
+}
+
+.url-item p {
+    margin: 5px 0;
+    word-break: break-all;
+}
+
+.url-item a {
+    color: #61dafb;
+    text-decoration: none;
+}
+
+.url-item a:hover {
+    text-decoration: underline;
+}
+
+.url-code {
+    font-family: monospace;
+    font-size: 0.9em;
+    color: #ccc;
+}
+
+.url-date {
+    font-size: 0.8em;
+    color: #aaa;
+    text-align: right;
+}

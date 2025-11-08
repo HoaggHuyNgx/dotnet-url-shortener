@@ -1,0 +1,57 @@
+﻿.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    padding: 10px 20px;
+    color: white;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    box-sizing: border-box; /* Đảm bảo padding không làm tràn width */
+    z-index: 1000;
+}
+
+.navbar-brand {
+    color: white;
+    text-decoration: none;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.navbar-user {
+    margin-right: 10px;
+    font-size: 1.1em;
+}
+
+.navbar-button {
+    background-color: #61dafb;
+    color: #282c34;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.navbar-button:hover {
+    background-color: #4fa8c5;
+}
+
+.navbar-button.register-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.navbar-button.register-btn:hover {
+    background-color: #218838;
+}
