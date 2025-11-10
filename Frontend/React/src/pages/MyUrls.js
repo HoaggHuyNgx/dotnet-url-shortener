@@ -53,6 +53,16 @@ const MyUrls = ({ user }) => {
                             <p>Short: <a href={url.shortUrl} target="_blank" rel="noopener noreferrer">{url.shortUrl}</a></p>
                             <p className="url-code">Code: {url.code}</p>
                             <p className="url-date">Created: {new Date(url.createdOnUtc).toLocaleString()}</p>
+                            {url.qrCodeBase64 && (
+                                <div className="qr-code-container">
+                                    <h4>QR Code:</h4>
+                                    <img
+                                        src={`data:image/png;base64,${url.qrCodeBase64}`}
+                                        alt={`QR Code for ${url.shortUrl}`}
+                                        className="qr-code-image"
+                                    />
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>
