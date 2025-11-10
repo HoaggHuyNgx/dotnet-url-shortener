@@ -21,8 +21,8 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
-        context: .
-        file: ./Dockerfile
+        context: ./Backend
+        file: ./Backend/Dockerfile
         push: true
         tags: briannguyen1/url-shortener:latest
 
