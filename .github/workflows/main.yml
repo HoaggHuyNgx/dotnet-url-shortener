@@ -24,7 +24,3 @@ jobs:
         file: ./Backend/Dockerfile
         push: true
         tags: briannguyen1/url-shortener:latest
-
-    - name: Trigger Render Deploy
-      # Sử dụng dấu ngoặc kép để đảm bảo URL được xử lý chính xác
-      run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"

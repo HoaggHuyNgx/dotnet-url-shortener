@@ -88,11 +88,13 @@ app.MapGet("/{code}", async (string code, IUrlRepository urlRepository) =>
     return Results.Redirect(shortenedUrl.OriginalUrl);
 });
 
-// --- Áp dụng Migrations ---
+// --- Áp dụng Migrations (Vô hiệu hóa để tăng tính ổn định) ---
+/*
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<UrlShortenerDbContext>();
     dbContext.Database.Migrate();
 }
+*/
 
 app.Run();
