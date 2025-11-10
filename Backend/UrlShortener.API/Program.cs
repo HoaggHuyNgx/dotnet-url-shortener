@@ -8,7 +8,7 @@ using UrlShortener.Core.Services;
 using UrlShortener.Infrastructure;
 using UrlShortener.Infrastructure.Data;
 using UrlShortener.Infrastructure.Identity;
-using UrlShortener.Infrastructure.Services; // Thêm using mới cho QrCodeService
+using UrlShortener.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,11 +58,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUrlService, UrlService>();
-builder.Services.AddScoped<IQrCodeService, QrCodeService>(); // Đăng ký QrCodeService
+builder.Services.AddScoped<IQrCodeService, QrCodeService>();
 
 var app = builder.Build();
 
 // --- Cấu hình HTTP Pipeline ---
+// Swagger phải được đặt trước các endpoint khác để nó có thể bắt các route /swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -76,8 +77,10 @@ app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Map các API controllers trước
 app.MapControllers();
 
+// Map endpoint redirect cuối cùng như một fallback
 app.MapGet("/{code}", async (string code, IUrlRepository urlRepository) =>
 {
     var shortenedUrl = await urlRepository.GetByCodeAsync(code);
