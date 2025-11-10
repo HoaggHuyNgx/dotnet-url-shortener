@@ -7,7 +7,6 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
     steps:
     - name: Check out the repo
       uses: actions/checkout@v4
@@ -27,4 +26,5 @@ jobs:
         tags: briannguyen1/url-shortener:latest
 
     - name: Trigger Render Deploy
-      run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      # Sử dụng dấu ngoặc kép để đảm bảo URL được xử lý chính xác
+      run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
