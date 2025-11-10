@@ -7,7 +7,8 @@ using UrlShortener.Core.Interfaces;
 using UrlShortener.Core.Services;
 using UrlShortener.Infrastructure;
 using UrlShortener.Infrastructure.Data;
-using UrlShortener.Infrastructure.Identity; // Thêm using mới
+using UrlShortener.Infrastructure.Identity;
+using UrlShortener.Infrastructure.Services; // Thêm using mới cho QrCodeService
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,6 +58,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUrlService, UrlService>();
+builder.Services.AddScoped<IQrCodeService, QrCodeService>(); // Đăng ký QrCodeService
 
 var app = builder.Build();
 

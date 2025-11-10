@@ -1,21 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using UrlShortener.API.DTOs;
 using UrlShortener.Core.Interfaces;
 
 namespace UrlShortener.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/urls")]
 public class UrlController : ControllerBase
 {
     private readonly IUrlService _urlService;
+    private readonly IQrCodeService _qrCodeService; // Inject IQrCodeService
 
-    public UrlController(IUrlService urlService)
+    public UrlController(IUrlService urlService, IQrCodeService qrCodeService) // Thêm IQrCodeService vào constructor
     {
         _urlService = urlService;
+        _qrCodeService = qrCodeService; // Gán dịch vụ
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> ShortenUrl([FromBody] CreateUrlRequest request)
     {
@@ -24,7 +29,6 @@ public class UrlController : ControllerBase
 
         if (User.Identity?.IsAuthenticated == true)
         {
-            // SỬA LỖI: Sử dụng ClaimTypes.NameIdentifier để lấy ID duy nhất của user
             userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
         else
@@ -57,7 +61,8 @@ public class UrlController : ControllerBase
                 LongUrl = shortenedUrl.OriginalUrl,
                 ShortUrl = shortenedUrl.FullShortUrl,
                 Code = shortenedUrl.ShortCode,
-                CreatedOnUtc = shortenedUrl.CreatedOnUtc
+                CreatedOnUtc = shortenedUrl.CreatedOnUtc,
+                QrCodeBase64 = _qrCodeService.GenerateQrCodeAsBase64(shortenedUrl.FullShortUrl) // Tạo và gán mã QR
             };
 
             return Ok(response);
@@ -72,6 +77,7 @@ public class UrlController : ControllerBase
         }
     }
 
+    [AllowAnonymous]
     [HttpGet("my-urls")]
     public async Task<IActionResult> GetMyUrls()
     {
@@ -80,7 +86,6 @@ public class UrlController : ControllerBase
 
         if (User.Identity?.IsAuthenticated == true)
         {
-            // SỬA LỖI: Sử dụng ClaimTypes.NameIdentifier để lấy ID duy nhất của user
             userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
         else
@@ -96,7 +101,8 @@ public class UrlController : ControllerBase
             LongUrl = url.OriginalUrl,
             ShortUrl = url.FullShortUrl,
             Code = url.ShortCode,
-            CreatedOnUtc = url.CreatedOnUtc
+            CreatedOnUtc = url.CreatedOnUtc,
+            QrCodeBase64 = _qrCodeService.GenerateQrCodeAsBase64(url.FullShortUrl) // Tạo và gán mã QR cho mỗi URL
         }).ToList();
 
         return Ok(response);

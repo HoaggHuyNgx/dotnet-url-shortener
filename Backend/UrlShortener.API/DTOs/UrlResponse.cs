@@ -9,4 +9,5 @@ public class UrlResponse
     public DateTime CreatedOnUtc { get; set; }
     public string? UserId { get; set; }
     public string? SessionId { get; set; }
+    public string? QrCodeBase64 { get; set; } // Thêm thuộc tính này
 }
