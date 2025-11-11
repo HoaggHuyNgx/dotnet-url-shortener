@@ -1,0 +1,33 @@
+﻿version: '3.8'
+
+services:
+  # Backend API Service
+  api:
+    build:
+      context: ./Backend # Đường dẫn đến thư mục chứa Dockerfile của Backend
+      dockerfile: Dockerfile # Tên Dockerfile trong thư mục Backend
+    ports:
+      - "5000:8080" # Ánh xạ cổng 5000 trên host tới cổng 80 trong container
+    environment:
+      # Cấu hình chuỗi kết nối database để container API có thể kết nối đến SQL Server trên host
+      # THAY THẾ your_db_user và your_db_password bằng thông tin đăng nhập SQL Server của bạn
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal;Database=UrlShortenerDb;Integrated Security=False;User ID=docker_user;Password=123;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development # Chạy ở môi trường Development để có Swagger
+    networks:
+      - app-network
+
+  # Frontend React App Service
+  frontend:
+    build:
+      context: ./Frontend/React # Đường dẫn đến thư mục chứa Dockerfile của Frontend
+      dockerfile: Dockerfile # Tên Dockerfile trong thư mục Frontend/React
+    ports:
+      - "3000:80" # Ánh xạ cổng 3000 trên host tới cổng 80 (của Nginx) trong container
+    depends_on:
+      - api # Frontend phụ thuộc vào API
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

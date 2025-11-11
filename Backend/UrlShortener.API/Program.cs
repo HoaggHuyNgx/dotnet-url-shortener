@@ -63,15 +63,15 @@ builder.Services.AddScoped<IQrCodeService, QrCodeService>();
 var app = builder.Build();
 
 // --- Cấu hình HTTP Pipeline ---
-// Swagger phải được đặt trước các endpoint khác để nó có thể bắt các route /swagger
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseHttpsRedirection();
 app.UseCors(MyAllowSpecificOrigins);
+
+// Swagger phải được đặt trước các endpoint khác để nó có thể bắt các route /swagger
+// Đã loại bỏ điều kiện IsDevelopment để Swagger luôn khả dụng
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 // Kích hoạt Authentication và Authorization
 app.UseAuthentication();

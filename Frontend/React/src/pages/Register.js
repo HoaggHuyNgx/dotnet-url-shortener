@@ -17,7 +17,8 @@ const Register = () => {
         setSuccess('');
 
         try {
-            const response = await axios.post('http://localhost:5234/api/auth/register', {
+            // Đã sửa cổng từ 5234 thành 5000
+            const response = await axios.post('http://localhost:5000/api/auth/register', {
                 username,
                 email,
                 password

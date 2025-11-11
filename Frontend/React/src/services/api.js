@@ -1,7 +1,7 @@
 ﻿import axios from 'axios';
 import { getSessionId } from '../utils/session';
 
-const API_URL = 'http://localhost:5234/api';
+const API_URL = 'http://localhost:5000/api'; // Đã sửa cổng từ 5234 thành 5000
 
 const api = axios.create({
     baseURL: API_URL,
