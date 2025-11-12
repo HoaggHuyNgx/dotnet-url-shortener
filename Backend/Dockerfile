@@ -2,15 +2,20 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /source
 
-# Copy all the project files and restore dependencies
+# Copy all the project files and solution file
 COPY *.sln .
 COPY UrlShortener.API/*.csproj ./UrlShortener.API/
 COPY UrlShortener.Core/*.csproj ./UrlShortener.Core/
 COPY UrlShortener.Infrastructure/*.csproj ./UrlShortener.Infrastructure/
-RUN dotnet restore
 
-# Copy the rest of the source code
+# Copy the rest of the source code BEFORE restoring
+# This ensures that restore runs on the most up-to-date code, fixing potential CI issues
 COPY . .
+
+# Restore dependencies for the entire solution
+RUN dotnet restore *.sln
+
+# Set the working directory to the API project and publish
 WORKDIR /source/UrlShortener.API
 RUN dotnet publish -c Release -o /app/publish --no-restore
 
