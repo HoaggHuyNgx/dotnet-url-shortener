@@ -10,7 +10,9 @@ COPY . .
 RUN dotnet restore "UrlShortener.sln"
 
 # Publish the API project.
-RUN dotnet publish "UrlShortener.API/UrlShortener.API.csproj" -c Release -o /app/publish --no-restore
+# REMOVED --no-restore to force publish to restore packages itself.
+# This is a more robust approach for CI environments where caching can be problematic.
+RUN dotnet publish "UrlShortener.API/UrlShortener.API.csproj" -c Release -o /app/publish
 
 # Stage 2: Create the final runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
