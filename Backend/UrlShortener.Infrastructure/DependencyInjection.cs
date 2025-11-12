@@ -16,6 +16,9 @@ public static class DependencyInjection
 
         services.AddScoped<IUrlRepository, UrlRepository>();
 
+        // Thêm dịch vụ Memory Cache
+        services.AddMemoryCache();
+
         return services;
     }
 }

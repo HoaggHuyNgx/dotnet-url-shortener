@@ -9,6 +9,10 @@ using UrlShortener.Infrastructure;
 using UrlShortener.Infrastructure.Data;
 using UrlShortener.Infrastructure.Identity;
 using UrlShortener.Infrastructure.Services;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
+using FluentValidation.AspNetCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +28,20 @@ builder.Services.AddCors(options =>
                                 .AllowAnyMethod();
                       });
 });
+
+// --- Cấu hình Rate Limiting ---
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter(policyName: "fixed", limiterOptions =>
+    {
+        limiterOptions.PermitLimit = 10; // 10 yêu cầu
+        limiterOptions.Window = TimeSpan.FromSeconds(10); // trong 10 giây
+        limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        limiterOptions.QueueLimit = 5; // Cho phép tối đa 5 yêu cầu vào hàng đợi
+    });
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+
 
 // --- Cấu hình Database và Infrastructure ---
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -55,6 +73,15 @@ builder.Services.AddAuthentication(options =>
 
 // --- Đăng ký các dịch vụ khác ---
 builder.Services.AddControllers();
+
+// --- Cấu hình FluentValidation ---
+builder.Services.AddFluentValidation(options =>
+{
+    // Tự động đăng ký tất cả các validator trong assembly hiện tại (UrlShortener.API)
+    options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+});
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUrlService, UrlService>();
@@ -63,6 +90,9 @@ builder.Services.AddScoped<IQrCodeService, QrCodeService>();
 var app = builder.Build();
 
 // --- Cấu hình HTTP Pipeline ---
+
+// Kích hoạt Rate Limiter
+app.UseRateLimiter();
 
 app.UseHttpsRedirection();
 app.UseCors(MyAllowSpecificOrigins);
@@ -77,8 +107,8 @@ app.UseSwaggerUI();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Map các API controllers trước
-app.MapControllers();
+// Map các API controllers trước và áp dụng chính sách Rate Limit
+app.MapControllers().RequireRateLimiting("fixed");
 
 // Map endpoint redirect cuối cùng như một fallback
 app.MapGet("/{code}", async (string code, IUrlRepository urlRepository) =>
