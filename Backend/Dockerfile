@@ -25,6 +25,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
+# Grant execute permissions to the app directory to ensure all files are accessible.
+RUN chmod -R 755 /app
+
 # Expose port 80 for the web application
 EXPOSE 80
 
